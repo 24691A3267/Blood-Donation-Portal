@@ -1,0 +1,59 @@
+require('dotenv').config();
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '8.8.4.4']); // Use Google DNS to resolve Atlas SRV records
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first'); // Force IPv4 over IPv6
+}
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./config/db');
+const errorHandler = require('./middleware/errorHandler');
+
+// Import routes
+const authRoutes = require('./routes/authRoutes');
+const donorRoutes = require('./routes/donorRoutes');
+const requestRoutes = require('./routes/requestRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const gamificationRoutes = require('./routes/gamificationRoutes');
+const reportRoutes = require('./routes/reportRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+const donationRoutes = require('./routes/donationRoutes');
+const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+// Connect to MongoDB
+connectDB();
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/donors', donorRoutes);
+app.use('/api/requests', requestRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/gamification', gamificationRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/donations', donationRoutes);
+// Health check
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'Server is running' });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+
+// Error handler middleware
+app.use(errorHandler);
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+module.exports = app;

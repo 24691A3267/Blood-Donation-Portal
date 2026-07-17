@@ -15,7 +15,7 @@ const Register = () => {
     confirmPassword: '',
     role: 'recipient',
   });
-  const [showOTP, setShowOTP] = useState(false);
+  const [showOTP] = useState(false);
   const [otp, setOtp] = useState('');
   const [alert, setAlert] = useState(null);
 

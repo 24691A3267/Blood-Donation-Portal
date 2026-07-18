@@ -24,8 +24,8 @@ const chatWithAI = async (req, res) => {
     const genAI = new GoogleGenerativeAI(apiKey.trim());
     
     // Using the verified available model for your key
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
+   // Using available Gemini model
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     // Format previous history for Gemini
     let formattedHistory = history && Array.isArray(history) ? history.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',

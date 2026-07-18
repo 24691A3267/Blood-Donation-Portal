@@ -22,7 +22,8 @@ const chatWithAI = async (req, res) => {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey.trim());
-    
+    const models = await genAI.listModels();
+console.log(models);
     // Using the verified available model for your key
    // Using available Gemini model
 const model = genAI.getGenerativeModel({ 

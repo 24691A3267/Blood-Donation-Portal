@@ -6,31 +6,45 @@ const { awardPoints } = require('./gamificationController');
 exports.createRequest = async (req, res) => {
   try {
     const {
-      bloodGroupNeeded,
-      hospitalName,
-      location,
-      urgencyLevel,
-      unitsRequired,
-      latitude,
-      longitude,
-      description,
-    } = req.body;
-
-    if (!bloodGroupNeeded || !hospitalName || !location || !unitsRequired) {
-      return res.status(400).json({ message: 'Please provide all required fields' });
-    }
-
+  bloodGroupNeeded,
+  hospitalName,
+  country,
+  state,
+  city,
+  location,
+  urgencyLevel,
+  unitsRequired,
+  latitude,
+  longitude,
+  description,
+} = req.body;
+if (
+  !bloodGroupNeeded ||
+  !hospitalName ||
+  !country ||
+  !state ||
+  !city ||
+  !location ||
+  !unitsRequired
+) {
+  return res.status(400).json({
+    message: 'Please provide all required fields',
+  });
+}
     const request = await Request.create({
-      userId: req.user.id,
-      bloodGroupNeeded,
-      hospitalName,
-      location,
-      urgencyLevel: urgencyLevel || 'medium',
-      unitsRequired,
-      latitude: latitude || null,
-      longitude: longitude || null,
-      description: description || '',
-    });
+  userId: req.user.id,
+  bloodGroupNeeded,
+  hospitalName,
+  country,
+  state,
+  city,
+  location,
+  urgencyLevel: urgencyLevel || 'medium',
+  unitsRequired,
+  latitude: latitude || null,
+  longitude: longitude || null,
+  description: description || '',
+});
 
     // Find matching donors
     const matchedDonors = await Donor.find({

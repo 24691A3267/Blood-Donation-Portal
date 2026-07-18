@@ -16,6 +16,30 @@ const requestSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide hospital name'],
     },
+    hospitalName: {
+  type: String,
+  required: [true, 'Please provide hospital name'],
+},
+
+country: {
+  type: String,
+  required: [true, 'Please provide country'],
+},
+
+state: {
+  type: String,
+  required: [true, 'Please provide state/province'],
+},
+
+city: {
+  type: String,
+  required: [true, 'Please provide city'],
+},
+
+location: {
+  type: String,
+  required: [true, 'Please provide location'],
+},
     location: {
       type: String,
       required: [true, 'Please provide location'],

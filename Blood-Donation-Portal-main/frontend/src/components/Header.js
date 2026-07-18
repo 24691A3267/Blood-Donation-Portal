@@ -87,7 +87,7 @@ console.log("User:", user);
 
         <div className="dropdown-header">
           <h4>👤 {user.name}</h4>
-          <p>🩸 {user.role} • {user.bloodGroup || "O+"}</p>
+         <p>🩸 {user.role}</p>
           <p>❤️ Donated: {user.donationCount || 0} times</p>
         </div>
 

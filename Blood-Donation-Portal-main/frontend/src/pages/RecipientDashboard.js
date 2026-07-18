@@ -12,13 +12,16 @@ const RecipientDashboard = () => {
   const [alert, setAlert] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    bloodGroupNeeded: '',
-    hospitalName: '',
-    location: '',
-    urgencyLevel: 'medium',
-    unitsRequired: 1,
-    description: '',
-  });
+  bloodGroupNeeded: '',
+  hospitalName: '',
+  country: '',
+  state: '',
+  city: '',
+  location: '',
+  urgencyLevel: 'medium',
+  unitsRequired: 1,
+  description: '',
+});
   const [fulfillmentData, setFulfillmentData] = useState({
     requestId: null,
     donorId: ''
@@ -50,14 +53,17 @@ const RecipientDashboard = () => {
       await requestAPI.createRequest(formData);
       setAlert({ message: 'Blood request created successfully!', type: 'success' });
       setShowForm(false);
-      setFormData({
-        bloodGroupNeeded: '',
-        hospitalName: '',
-        location: '',
-        urgencyLevel: 'medium',
-        unitsRequired: 1,
-        description: '',
-      });
+     setFormData({
+  bloodGroupNeeded: '',
+  hospitalName: '',
+  country: '',
+  state: '',
+  city: '',
+  location: '',
+  urgencyLevel: 'medium',
+  unitsRequired: 1,
+  description: '',
+});
       fetchUserRequests();
     } catch (error) {
       setAlert({
@@ -154,6 +160,41 @@ const RecipientDashboard = () => {
                 placeholder="Enter hospital name"
               />
             </div>
+            <div className="form-group">
+  <label>Country</label>
+  <input
+    type="text"
+    name="country"
+    value={formData.country}
+    onChange={handleFormChange}
+    required
+    placeholder="Enter country"
+  />
+</div>
+
+<div className="form-group">
+  <label>State / Province</label>
+  <input
+    type="text"
+    name="state"
+    value={formData.state}
+    onChange={handleFormChange}
+    required
+    placeholder="Enter state or province"
+  />
+</div>
+
+<div className="form-group">
+  <label>City</label>
+  <input
+    type="text"
+    name="city"
+    value={formData.city}
+    onChange={handleFormChange}
+    required
+    placeholder="Enter city"
+  />
+</div>
 
             <div className="form-group">
               <label>Location</label>
@@ -232,7 +273,10 @@ const RecipientDashboard = () => {
                   </span>
                 </div>
                 <p><strong>Blood Group:</strong> {request.bloodGroupNeeded}</p>
-                <p><strong>Location:</strong> {request.location}</p>
+               <p><strong>Country:</strong> {request.country}</p>
+<p><strong>State / Province:</strong> {request.state}</p>
+<p><strong>City:</strong> {request.city}</p>
+<p><strong>Location:</strong> {request.location}</p>
                 <p><strong>Units:</strong> {request.unitsRequired}</p>
                 <p><strong>Urgency:</strong> {request.urgencyLevel.toUpperCase()}</p>
                 <p><strong>Matched Donors:</strong> {request.matchedDonors?.length || 0}</p>

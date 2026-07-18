@@ -59,7 +59,12 @@ const RequestDetails = () => {
             <span className="hospital-logo">🏥</span>
             <div>
               <h1>{request.hospitalName}</h1>
-              <p className="location-text">📍 {request.location}</p>
+              <div className="location-text">
+  <p>🌍 {request.country}</p>
+  <p>📍 {request.state}</p>
+  <p>🏙️ {request.city}</p>
+  <p>📌 {request.location}</p>
+</div>
             </div>
           </div>
           <div className="blood-large-badge">

@@ -10,67 +10,90 @@ const chatWithAI = async (req, res) => {
     const { message, history } = req.body;
 
     if (!message) {
-      return res.status(400).json({ message: 'Message is required' });
+      return res.status(400).json({
+        message: 'Message is required'
+      });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
+
     if (!apiKey) {
-      return res.status(200).json({ 
+      return res.status(200).json({
         success: true,
-        reply: 'I am not fully configured yet! The site administrator needs to add a GEMINI_API_KEY to the backend .env file or environment variables.' 
+        reply:
+          'AI is not configured yet. Please add GEMINI_API_KEY in Render environment variables.'
       });
     }
 
     const genAI = new GoogleGenerativeAI(apiKey.trim());
-    const models = await genAI.listModels();
-console.log(models);
-    // Using the verified available model for your key
-   // Using available Gemini model
-const model = genAI.getGenerativeModel({ 
-  model: 'gemini-2.0-flash'
-});// Format previous history for Gemini
-    let formattedHistory = history && Array.isArray(history) ? history.map(msg => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
-    })) : [];
 
-    // Gemini requires the history to start with a 'user' message. 
-    while (formattedHistory.length > 0 && formattedHistory[0].role === 'model') {
+    // Stable Gemini model
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash"
+    });
+
+    // Prepare chat history
+    let formattedHistory = [];
+
+    if (Array.isArray(history)) {
+      formattedHistory = history.map((msg) => ({
+        role: msg.role === "user" ? "user" : "model",
+        parts: [
+          {
+            text: msg.text
+          }
+        ]
+      }));
+    }
+
+    // Gemini history must start with user message
+    while (
+      formattedHistory.length > 0 &&
+      formattedHistory[0].role === "model"
+    ) {
       formattedHistory.shift();
     }
 
-    // Start a chat session
     const chat = model.startChat({
-      history: formattedHistory,
+      history: formattedHistory
     });
 
-    // Add system instruction as a prefix to the first message if it's a new chat
-    const systemPrompt = `Assistant for BloodLink Portal. Help with blood donation/requests. Be empathetic. User says: ${message}`;
+    const prompt = `
+You are BloodLink AI Assistant.
+Help users with blood donation, blood requests, donor information,
+eligibility, and emergency guidance.
+Be polite and empathetic.
 
-    // Send the message
-    const result = await chat.sendMessage(systemPrompt);
+User message:
+${message}
+`;
+
+    const result = await chat.sendMessage(prompt);
+
     const responseText = result.response.text();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      reply: responseText,
+      reply: responseText
     });
 
   } catch (error) {
-    console.error('AI Chat Error Details:', {
+
+    console.error("AI Chat Error Details:", {
       message: error.message,
       status: error.status,
-      statusText: error.statusText,
-      stack: error.stack
+      statusText: error.statusText
     });
-    
-    res.status(500).json({ 
-      success: false, 
-      message: 'The AI service is currently unavailable. Please check your API key or model configuration.',
-      error: error.message 
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "The AI service is currently unavailable. Please check Gemini API configuration.",
+      error: error.message
     });
   }
 };
+
 
 module.exports = {
   chatWithAI

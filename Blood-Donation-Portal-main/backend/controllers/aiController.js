@@ -59,8 +59,7 @@ ${message}
 
 
   } catch (error) {
-
-    console.error("AI Chat Error:", error.message);
+console.error("AI Chat Error:", error);
 
 
     // Handle quota error

@@ -4,7 +4,6 @@ import { AuthContext, AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Loading from './components/Loading';
-import Chatbot from './components/Chatbot';
 
 // Pages
 import Home from './pages/Home';
@@ -52,6 +51,7 @@ function AppContent() {
     <Router>
       <div className="app">
         <Header />
+
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -98,19 +98,20 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+
             <Route
-  path="/my-donations"
-  element={
-    <ProtectedRoute>
-      <Donation />
-    </ProtectedRoute>
-  }
-/>
+              path="/my-donations"
+              element={
+                <ProtectedRoute>
+                  <Donation />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
-        <Chatbot />
+
         <Footer />
       </div>
     </Router>

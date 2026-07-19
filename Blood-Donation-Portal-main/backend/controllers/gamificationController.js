@@ -4,30 +4,35 @@ const Donor = require('../models/Donor');
 // Get Leaderboard
 exports.getLeaderboard = async (req, res) => {
   try {
-    const topDonors = await User.find({ role: 'donor' })
-      .select('name points level badges')
+    const topUsers = await User.find()
+      .select('name role points level badges')
       .sort({ points: -1 })
       .limit(10);
 
     res.status(200).json({
       success: true,
-      leaderboard: topDonors,
+      leaderboard: topUsers,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch leaderboard', error: error.message });
+    res.status(500).json({
+      message: 'Failed to fetch leaderboard',
+      error: error.message,
+    });
   }
 };
 
 // Get User Gamification Profile
 exports.getGamificationProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('points badges level xp');
-    
+    const user = await User.findById(req.user.id).select(
+      'points badges level xp'
+    );
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Calculate next level threshold (example: Level * 1000 XP)
+    // Calculate next level threshold
     const nextLevelXp = user.level * 1000;
     const progress = (user.xp / nextLevelXp) * 100;
 
@@ -43,14 +48,23 @@ exports.getGamificationProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch profile', error: error.message });
+    res.status(500).json({
+      message: 'Failed to fetch profile',
+      error: error.message,
+    });
   }
 };
 
 // Helper function to award points
-exports.awardPoints = async (userId, pointsAwarded, xpAwarded, badgeName = null) => {
+exports.awardPoints = async (
+  userId,
+  pointsAwarded,
+  xpAwarded,
+  badgeName = null
+) => {
   try {
     const user = await User.findById(userId);
+
     if (!user) return;
 
     user.points += pointsAwarded;
@@ -58,6 +72,7 @@ exports.awardPoints = async (userId, pointsAwarded, xpAwarded, badgeName = null)
 
     // Check for level up
     const nextLevelXp = user.level * 1000;
+
     if (user.xp >= nextLevelXp) {
       user.level += 1;
       user.xp = user.xp - nextLevelXp;
@@ -65,7 +80,10 @@ exports.awardPoints = async (userId, pointsAwarded, xpAwarded, badgeName = null)
 
     // Award badge if provided
     if (badgeName) {
-      const hasBadge = user.badges.some(b => b.name === badgeName);
+      const hasBadge = user.badges.some(
+        (badge) => badge.name === badgeName
+      );
+
       if (!hasBadge) {
         user.badges.push({
           name: badgeName,
@@ -87,7 +105,8 @@ const getBadgeIcon = (name) => {
     'Emergency Hero': '⚡',
     'Silver Donor': '🥈',
     'Gold Donor': '🥇',
-    'Legendary': '👑',
+    Legendary: '👑',
   };
+
   return icons[name] || '🎖️';
 };

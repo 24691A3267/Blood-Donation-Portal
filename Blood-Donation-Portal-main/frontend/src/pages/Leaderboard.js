@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import api from '../utils/api';
 import '../styles/Rewards.css';
 
-const leaderboard = [
-  { name: "Greeshma", points: 1000, level: 2, badges: [{ icon: "🩸" }] },
-  { name: "Vineeth", points: 500, level: 2, badges: [{ icon: "🩸" }] },
-  { name: "Chandana", points: 200, level: 1, badges: [{ icon: "🩸" }] },
-  { name: "Rahul", points: 180, level: 1, badges: [{ icon: "🩸" }] },
-  { name: "Priya", points: 160, level: 1, badges: [{ icon: "🩸" }] },
-  { name: "Arjun", points: 140, level: 1, badges: [{ icon: "🩸" }] },
-  { name: "Keerthana", points: 120, level: 1, badges: [{ icon: "🩸" }] },
-  { name: "Sai Kiran", points: 100, level: 1, badges: [{ icon: "🩸" }] },
-  { name: "Meghana", points: 80, level: 1, badges: [{ icon: "🩸" }] },
-  { name: "Harsha", points: 60, level: 1, badges: [{ icon: "🩸" }] }
-];
 
 const Leaderboard = () => {
+  const [leaderboard, setLeaderboard] = useState([]);
+
+useEffect(() => {
+  const fetchLeaderboard = async () => {
+    try {
+      const res = await api.get('/gamification/leaderboard');
+      setLeaderboard(res.data.leaderboard);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchLeaderboard();
+}, []);
   return (
     <div className="leaderboard-container">
       <div className="leaderboard-header">
